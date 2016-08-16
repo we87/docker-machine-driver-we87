@@ -8,8 +8,8 @@ code is based on generic driver and aliyunecs driver
 ## Related links
 
 - **Docker Machine**: https://docs.docker.com/machine/
-- **Contribute**: https://github.com/denverdino/docker-machine-driver-aliyunecs
-- **Report bugs**: https://github.com/denverdino/docker-machine-driver-aliyunecs/issues
+- **Contribute**: https://github.com/we87/docker-machine-driver-we87
+- **Report bugs**: https://github.com/we87/docker-machine-driver-we87/issues
 
 ## License
 
