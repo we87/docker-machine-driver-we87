@@ -28,6 +28,11 @@ main()
     exit 0
   fi
 
+  if grep -qs "\$DISK_ATTACH_POINT" /proc/mounts; then
+    echo "Disk \$DISK_ATTACH_POINT is already mounted, skip"
+    exit 0
+  fi
+
   fdisk_fun
   flag=0
   if [ -d "/var/lib/docker" ];then
