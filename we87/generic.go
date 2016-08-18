@@ -446,7 +446,7 @@ func (d *Driver) enableOssFuseHelper(sshClient ssh.Client) {
 func (d *Driver) upgradeKernel(sshClient ssh.Client) {
 	log.Debug("Upgrade kernel version ...")
 	output, err := sshClient.Output("for i in 1 2 3 4 5; do apt-get update -y && break || sleep 5; done")
-	log.Infof("apt-get update update err: %v, output: %s", err, output)
+	log.Infof("apt-get update err: %v, output: %s", err, output)
 	output, err = sshClient.Output("for i in 1 2 3 4 5; do apt-get install -y linux-generic-lts-xenial && break || sleep 5; done")
 	log.Infof("Upgrade kernel err: %v, output: %s", err, output)
 	time.Sleep(5 * time.Second)

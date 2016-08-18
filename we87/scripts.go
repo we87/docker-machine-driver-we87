@@ -37,16 +37,18 @@ main()
 
   mkdir -p /data
   echo "\${DISK_ATTACH_POINT}1    /data     ext4    defaults        0 0" >>/etc/fstab
+  mount -a
 
   mkdir -p /data/docker
   echo "/data/docker    /var/lib/docker     none    bind        0 0" >>/etc/fstab
-
   flag=0
-  if [ -d "/var/lib/docker" ];then
+  if [ -d "/var/lib/docker" ]; then
     flag=1
     service docker stop
     rsync -aXS /var/lib/docker/.  /data/docker/
     rm -rf /var/lib/docker
+  else
+    mkdir -p /var/lib/docker
   fi
   mount -a
 
