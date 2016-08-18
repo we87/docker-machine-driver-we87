@@ -34,14 +34,20 @@ main()
   fi
 
   fdisk_fun
+
+  mkdir -p /data
+  echo "\${DISK_ATTACH_POINT}1    /data     ext4    defaults        0 0" >>/etc/fstab
+
+  mkdir -p /data/docker
+  echo "/data/docker    /var/lib/docker     none    bind        0 0" >>/etc/fstab
+
   flag=0
   if [ -d "/var/lib/docker" ];then
     flag=1
     service docker stop
-    rm -fr /var/lib/docker
+    rsync -aXS /var/lib/docker/.  /data/docker/
+    rm -rf /var/lib/docker
   fi
-  mkdir /var/lib/docker
-  echo "\${DISK_ATTACH_POINT}1    /var/lib/docker     ext4    defaults        0 0" >>/etc/fstab
   mount -a
 
   if [ \$flag==1 ]; then
