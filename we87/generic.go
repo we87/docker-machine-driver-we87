@@ -387,6 +387,8 @@ func (d *Driver) provision() error {
 
 	d.disableSSHPasswordLogin(sshClient)
 
+	d.enableOssFuseHelper(sshClient)
+
 	return nil
 }
 
@@ -424,12 +426,20 @@ func (d *Driver) autoFdisk(sshClient ssh.Client) {
 	log.Debugf("Auto Fdisk command err: %v, output: %s", err, output)
 }
 
-// Mount the addtional disk
+// Disable ssh password access
 func (d *Driver) disableSSHPasswordLogin(sshClient ssh.Client) {
 	script := fmt.Sprintf("cat > ~/machine_secssh.sh <<MACHINE_EOF\n%s\nMACHINE_EOF\n", disableSSHPassword)
 	output, err := sshClient.Output(script)
 	output, err = sshClient.Output("bash ~/machine_secssh.sh")
 	log.Debugf("Secure ssh command err: %v, output: %s", err, output)
+}
+
+// Install oss fuse helper, if want to deploy ossfs container
+func (d *Driver) enableOssFuseHelper(sshClient ssh.Client) {
+	script := fmt.Sprintf("cat > ~/ossfuse_helper.sh <<MACHINE_EOF\n%s\nMACHINE_EOF\n", ossfuseHelper)
+	output, err := sshClient.Output(script)
+	output, err = sshClient.Output("bash ~/ossfuse_helper.sh")
+	log.Debugf("OSS fuse helper command err: %v, output: %s", err, output)
 }
 
 // Install Kernel 4.4

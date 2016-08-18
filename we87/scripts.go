@@ -66,3 +66,19 @@ grep -q "^[^#]*PasswordAuthentication" /etc/ssh/sshd_config && sed -i "/^[^#]*Pa
 service ssh restart
 
 `
+
+const ossfuseHelper = `#/bin/bash
+grep -q "oss" /etc/updatedb.conf || sed -i.bak "s/PRUNEFS=\"/PRUNEFS=\"fuse.ossfs /" /etc/updatedb.conf
+grep -q "oss" /etc/updatedb.conf || sed -i.bak "s/PRUNEPATHS=\"/PRUNEPATHS=\"\/oss /" /etc/updatedb.conf
+rm -rf /etc/updatedb.conf.bak
+
+# egg in egg
+echo "SHELL=/bin/sh" >/etc/cron.d/ossfusehelper
+echo "PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin" >>/etc/cron.d/ossfusehelper
+echo "@reboot root  mkdir -p /oss && mount --bind /oss /oss && mount --make-rshared /oss" >>/etc/cron.d/ossfusehelper
+
+# mount inplace
+mkdir -p /oss
+mount | grep  -q "/oss" || mount --bind /oss /oss && mount --make-rshared /oss
+
+`
