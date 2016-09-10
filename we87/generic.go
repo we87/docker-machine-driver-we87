@@ -31,6 +31,7 @@ type Driver struct {
 
 	// ecs
 	UpgradeKernel bool
+	AutoFmtDisk   bool
 	AccessKey     string
 	SecretKey     string
 	Region        common.Region
@@ -99,6 +100,11 @@ func (d *Driver) GetCreateFlags() []mcnflag.Flag {
 			Usage:  "Upgrade kernel for instance (Ubuntu 14.04 only)",
 			EnvVar: "WE87_UPGRADE_KERNEL",
 		},
+		mcnflag.BoolFlag{
+			Name:   "we87-auto-format-disk",
+			Usage:  "Auto format external disk and mount to /var/lib/docker",
+			EnvVar: "WE87_UPGRADE_KERNEL",
+		},
 		mcnflag.StringFlag{
 			Name:   "we87-region",
 			Usage:  "WE87 region, default " + defaultRegion,
@@ -153,6 +159,7 @@ func (d *Driver) SetConfigFromFlags(flags drivers.DriverOptions) error {
 	}
 	d.Region = region
 	d.UpgradeKernel = flags.Bool("we87-upgrade-kernel")
+	d.AutoFmtDisk = flags.Bool("we87-auto-format-disk")
 
 	if d.IPAddress == "" {
 		return errors.New("generic driver requires the --we87-ip-address option")
@@ -377,7 +384,9 @@ func (d *Driver) provision() error {
 
 	d.installCurl(sshClient)
 
-	d.autoFdisk(sshClient)
+	if d.AutoFmtDisk {
+		d.autoFdisk(sshClient)
+	}
 
 	if d.UpgradeKernel {
 		d.upgradeKernel(sshClient)
